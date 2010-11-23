@@ -5,7 +5,7 @@ class TmdbMovie
       :expand_results => true
     }.merge(options)
     
-    raise ArgumentError, "At least one of: id, title, imdb should be supplied" if(options[:id].nil? && options[:imdb].nil? && options[:title].nil?)
+    raise ArgumentError, "At least one of: id, title, imdb, browse should be supplied" if(options[:id].nil? && options[:imdb].nil? && options[:title].nil? && options[:browse].nil?)
     
     results = []
     unless(options[:id].nil? || options[:id].to_s.empty?)
@@ -18,6 +18,9 @@ class TmdbMovie
     unless(options[:title].nil? || options[:title].to_s.empty?)
       results << Tmdb.api_call("Movie.search", options[:title])
     end
+    unless(options[:browse].blank?)
+      results << Tmdb.api_call("Movie.browse", { :order => "desc", :order_by => "rating"  }.merge(options[:browse]))
+    end
     
     results.flatten!
     results.compact!
@@ -29,7 +32,7 @@ class TmdbMovie
     
     results.map!{|m| TmdbMovie.new(m, options[:expand_results]) }
     
-    if(results.length == 1)
+    if(results.length == 1 && !options[:id].blank?)
       return results[0]
     else
       return results
