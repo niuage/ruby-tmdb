@@ -25,8 +25,11 @@ class TmdbCast
   
     results.map!{|c| TmdbCast.new(c, options[:expand_results]) }
   
-
+    if results.length == 1 && !options[:id].nil?
+      return results[0]
+    else
       return results
+    end
 
   end
   
