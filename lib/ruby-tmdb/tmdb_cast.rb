@@ -25,11 +25,9 @@ class TmdbCast
   
     results.map!{|c| TmdbCast.new(c, options[:expand_results]) }
   
-    if(results.length == 1)
-      return results[0]
-    else
+
       return results
-    end
+
   end
   
   def self.new(raw_data, expand_results = false)
